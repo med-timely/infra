@@ -1,0 +1,52 @@
+services:
+  bot:
+    image: ghcr.io/med-timely/bot:latest
+    environment:
+      - BOT__TOKEN=${BOT__TOKEN}
+      - DB__URL=${DB__URL}
+      - REDIS__URL=redis://redis:6379/0
+      - LLM__API_KEY=${LLM__API_KEY}
+      - RUN_MIGRATIONS=true
+    networks:
+      - internal
+    deploy:
+      restart_policy:
+        condition: on-failure
+        window: 15s
+      update_config:
+        order: start-first
+        monitor: 15s
+        failure_action: rollback
+      rollback_config:
+        order: start-first
+        monitor: 15s
+
+  celery-worker:
+    image: ghcr.io/med-timely/bot:latest
+    command: celery -A src.tasks.celery worker --loglevel=info
+    environment:
+      - BOT__TOKEN=${BOT__TOKEN}
+      - DB__URL=${DB__URL}
+      - REDIS__URL=redis://redis:6379/0
+      - LLM__API_KEY=${LLM__API_KEY}
+    networks:
+      - internal
+
+
+  celery-beat:
+    image: ghcr.io/med-timely/bot:latest
+    command: celery -A src.tasks.celery beat --loglevel=info
+    environment:
+      - BOT__TOKEN=${BOT__TOKEN}
+      - DB__URL=${DB__URL}
+      - REDIS__URL=redis://redis:6379/0
+      - LLM__API_KEY=${LLM__API_KEY}
+    networks:
+      - internal
+
+   
+networks:
+  internal:
+    external: true
+  public:
+    external: true

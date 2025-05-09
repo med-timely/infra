@@ -10,6 +10,11 @@ services:
     networks:
       - internal
     deploy:
+      resources:
+        reservations:
+          memory: 128M
+        limits:
+          memory: 256M
       restart_policy:
         condition: on-failure
         window: 15s
@@ -31,6 +36,12 @@ services:
       - LLM__API_KEY=${LLM__API_KEY}
     networks:
       - internal
+    deploy:
+      resources:
+        reservations:
+          memory: 64M
+        limits:
+          memory: 128M
 
 
   celery-beat:
@@ -43,6 +54,12 @@ services:
       - LLM__API_KEY=${LLM__API_KEY}
     networks:
       - internal
+    deploy:
+      resources:
+        reservations:
+          memory: 16M
+        limits:
+          memory: 32M
 
    
 networks:

@@ -57,9 +57,9 @@ services:
     deploy:
       resources:
         reservations:
-          memory: 16M
-        limits:
           memory: 32M
+        limits:
+          memory: 64M
 
    
 networks:

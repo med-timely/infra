@@ -6,6 +6,7 @@ services:
       - DB__URL=${DB__URL}
       - REDIS__URL=redis://redis:6379/0
       - LLM__API_KEY=${LLM__API_KEY}
+      - LLM__DEFAULT_MODEL=${LLM__DEFAULT_MODEL}
       - RUN_MIGRATIONS=true
     networks:
       - internal
@@ -43,7 +44,6 @@ services:
         limits:
           memory: 128M
 
-
   celery-beat:
     image: ghcr.io/med-timely/bot:latest
     command: celery -A src.tasks.celery beat --loglevel=info
@@ -61,7 +61,6 @@ services:
         limits:
           memory: 64M
 
-   
 networks:
   internal:
     external: true
